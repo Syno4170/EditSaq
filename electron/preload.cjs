@@ -1,0 +1,26 @@
+const { contextBridge, ipcRenderer, webUtils } = require('electron');
+
+contextBridge.exposeInMainWorld('editsaq', {
+  toUrl: (p) => 'media://local/' + encodeURIComponent(p),
+  pathForFile: (file) => webUtils.getPathForFile(file),
+  probe: (p) => ipcRenderer.invoke('media:probe', p),
+  peaks: (p) => ipcRenderer.invoke('media:peaks', p),
+  proxy: (p) => ipcRenderer.invoke('media:proxy', p),
+  exists: (p) => ipcRenderer.invoke('fs:exists', p),
+  importDialog: () => ipcRenderer.invoke('dialog:import'),
+  saveProject: (args) => ipcRenderer.invoke('project:save', args),
+  openProject: () => ipcRenderer.invoke('project:open'),
+  saveFileDialog: (args) => ipcRenderer.invoke('dialog:saveFile', args),
+  writeDataUrl: (args) => ipcRenderer.invoke('fs:writeDataUrl', args),
+  showItem: (p) => ipcRenderer.invoke('shell:showItem', p),
+  setDirty: (d) => ipcRenderer.send('app:dirty', d),
+  setTitle: (t) => ipcRenderer.send('app:title', t),
+  exportStart: (opts) => ipcRenderer.invoke('export:start', opts),
+  exportFrame: (bytes) => ipcRenderer.invoke('export:frame', bytes),
+  exportFinish: () => ipcRenderer.invoke('export:finish'),
+  exportCancel: () => ipcRenderer.invoke('export:cancel'),
+  exportAudioOnly: (opts) => ipcRenderer.invoke('export:audioOnly', opts),
+  exportOpenClip: (opts) => ipcRenderer.invoke('export:openClip', opts),
+  exportClipFrame: (id) => ipcRenderer.invoke('export:clipFrame', id),
+  exportCloseClip: (id) => ipcRenderer.invoke('export:closeClip', id),
+});
